@@ -56,7 +56,7 @@ public class BattleProcedure {
        System.out.print( (int)Math.rint((HP/maxHP)*100)+"% ");
     
        for(int i = 0; i < ((HP/maxHP)*10); i++) {
-        System.out.print(GREEN+"[]"+RESET);
+        System.out.print(GREEN+"||"+RESET);
        }
        for(int x = 0; x < ( (10-((HP/maxHP)*10) ) ); x++){
         System.out.print("__");
@@ -67,7 +67,7 @@ public class BattleProcedure {
        System.out.print((int) Math.rint((enemyHP/enemyMaxHP)*100)+"% ");
     
        for(int i = 0; i < ((enemyHP/enemyMaxHP)*10); i++) {
-        System.out.print(GREEN+"[]"+RESET);
+        System.out.print(GREEN+"||"+RESET);
        }
        for(int x = 0; x < ( (10-((enemyHP/enemyMaxHP)*10) ) ); x++){
         System.out.print("__");
