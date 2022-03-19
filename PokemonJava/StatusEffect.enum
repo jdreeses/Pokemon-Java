@@ -1,0 +1,1 @@
+public enum StatusEffect {PSN, SLP, BRN, PAR, FRZ, CNF}

@@ -1,0 +1,3 @@
+public enum TYPE {FIRE, WATER, GRASS, ROCK, GROUND, NORMAL, 
+                        DARK, POISON, STEEL, DRAGON, PSYCHIC, GHOST,
+                        ELECTRIC, FIGHTING, ICE, FAIRY, BUG, FLYING}
