@@ -288,7 +288,7 @@ public class BattleProcedure {
 
 public void youWin() throws InterruptedException{
     Scanner scanner2 = new Scanner(System.in);
-    System.out.println("You win! Congratulations. Play again? [Yes] / [No]");
+    System.out.println("You win! Congratulations. (Please kill(trash icon) terminal and re-run 'Battle' to play again! )");
     String playAgain = scanner2.nextLine();
     if(playAgain.equals("Yes")){
         trainer.playAgain = true;
@@ -307,7 +307,7 @@ public void youWin() throws InterruptedException{
 
 public void rivalWins() throws InterruptedException{
     Scanner scanner2 = new Scanner(System.in);
-    System.out.println("You lost! Play again? [Yes] / [No]");
+    System.out.println("You lost! (Please kill(trash icon) terminal and re-run 'Battle' to play again! )");
     String playAgain = scanner2.nextLine();
     if(playAgain.equals("Yes")){
         trainer.playAgain = true;
