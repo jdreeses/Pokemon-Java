@@ -2,6 +2,8 @@ package PokemonJava;
 
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
 
@@ -126,10 +128,26 @@ public class BattleProcedure {
             space();
             System.out.println(pokemon.name+" was hurt by its burn!");
             pokemon.currentHealth -= (pokemon.realHP / 16);
+            if(this.trainer.pokemon.currentHealth <= 0){
+                userFaint();
+                return;
+            }
+            if(this.rival.pokemon.currentHealth <= 0){
+                rivalFaint();
+                return;
+            }
         }
         if(pokemon.status.equals(StatusEffect.PSN)){
             System.out.println(pokemon.name+" was hurt by its poison!");
             pokemon.currentHealth -= (pokemon.realHP / 16);
+            if(this.trainer.pokemon.currentHealth <= 0){
+                userFaint();
+                return;
+            }
+            if(this.rival.pokemon.currentHealth <= 0){
+                rivalFaint();
+                return;
+            }
         }
     }
 
@@ -158,7 +176,9 @@ public class BattleProcedure {
         space();
         if(target.currentHealth <=0){
             target.currentHealth = 0;
-            youWin();
+            rivalFaint();
+            Engage();
+            return;
         }
     }
 
@@ -180,11 +200,101 @@ public class BattleProcedure {
         if(target.currentHealth <= 0){
             target.currentHealth = 0;
         }
+        pause();
         displayHealth();
         pause();
         space();
         if(target.currentHealth <= 0){
             target.currentHealth = 0;
+            System.out.println(target.name+" fainted!");
+            userFaint();
+            Engage();
+            return;
+        }
+    }
+
+
+    public void rivalFaint() throws InterruptedException {
+        boolean pokemonLeft = false;
+        System.out.println(this.rival.pokemon.name + " fainted!");
+        pause();
+        for(int i = 0; i < this.rival.team.size(); i++){
+            if(this.rival.team.get(i).currentHealth > 0){
+                pokemonLeft = true;
+            }
+        }
+        if(pokemonLeft){
+            ArrayList<Pokemon> usable = new ArrayList<>(Arrays.asList());
+            for(int i = 0; i < this.rival.team.size(); i++){
+                if(this.rival.team.get(i).currentHealth > 0){
+                    usable.add(this.rival.team.get(i));
+                }
+            }
+            int rand = getRand(usable.size());
+            this.rival.pokemon = usable.get(rand);
+            this.rivalPokemon = usable.get(rand);
+            space();
+            pause();
+            System.out.println("Rival sent out "+this.rival.pokemon.name+"!");
+            pause();
+            displayHealth();
+            return;
+        }
+        else{
+            pause();
+            space();
+            System.out.println("Rival is out of usable pokemon!");
+            pause();
+            space();
+            youWin();
+        }
+    }
+
+    public void userFaint() throws InterruptedException {
+        Scanner scanner = new Scanner(System.in);
+        boolean pokemonLeft = false;
+        for(int i = 0; i < this.trainer.team.size(); i++){
+            if(this.trainer.team.get(i).currentHealth > 0){
+                pokemonLeft = true;
+            }
+        }
+        if(pokemonLeft){
+            ArrayList<Pokemon> usable = new ArrayList<>(Arrays.asList());
+            for(int i = 0; i < this.trainer.team.size(); i++){
+                if(this.trainer.team.get(i).currentHealth > 0){
+                    usable.add(this.trainer.team.get(i));
+                }
+            }
+            System.out.println("Select next Pokemon:");
+            for(int i = 0; i < usable.size();i++){
+                System.out.println(usable.get(i).name);
+            }
+            String selection = scanner.nextLine();
+            boolean goodSelect = false;
+            for(int i = 0; i < usable.size(); i++){
+                if(selection.equals(usable.get(i).name)){
+                    this.trainer.pokemon = usable.get(i);
+                    this.trainerPokemon = usable.get(i);
+                    goodSelect = true;
+                    pause();
+                    space();
+                    System.out.println("Go, "+usable.get(i).name);
+                    pause();
+                    displayHealth();
+                    return;
+                }
+            }
+            if(!goodSelect){
+                System.out.println("Invalid selection.");
+                userFaint();
+            }
+        }
+        else{
+            pause();
+            space();
+            System.out.println("You are out of usable pokemon!");
+            pause();
+            space();
             rivalWins();
         }
     }
@@ -222,8 +332,8 @@ public class BattleProcedure {
             move rivalsMove = this.rivalPokemon.moves.get(rivalMoveIndex);
 
             rivalMove(this.rivalPokemon, this.trainerPokemon, rivalsMove);
-            DamageStatus(this.trainerPokemon);
-            DamageStatus(this.rivalPokemon);
+            DamageStatus(this.trainer.pokemon);
+            DamageStatus(this.rival.pokemon);
             pause();
             Engage();
         }
@@ -240,14 +350,56 @@ public class BattleProcedure {
             Engage();
         }
     }
+
+    public void Switch() throws InterruptedException {
+        System.out.println("Come back "+this.trainerPokemon.name);
+        space();
+        Scanner scanner = new Scanner(System.in);
+        ArrayList<Pokemon> usable = new ArrayList<>(Arrays.asList());
+         System.out.println("Switch to which Pokemon?");
+         for(int i = 0; i < this.trainer.team.size(); i++){
+            if(this.trainer.team.get(i).currentHealth > 0){
+                usable.add(this.trainer.team.get(i));
+            }
+        }
+         for(int i = 0; i < usable.size(); i++){
+                System.out.println(usable.get(i).name);
+         }
+         String response = scanner.nextLine();
+         for(int i = 0; i < usable.size(); i++){
+            if(usable.get(i).name.equals(response)){
+                this.trainerPokemon = this.trainer.team.get(i);
+                this.trainer.pokemon = this.trainer.team.get(i);
+            }
+        }
+        pause();
+        space();
+        System.out.println("Go, "+this.trainerPokemon.name+"!");
+        displayHealth();
+        pause();
+        space();
+        int rivalMoveIndex = getRand(this.rivalPokemon.moves.size());
+        move rivalsMove = this.rivalPokemon.moves.get(rivalMoveIndex);
+        rivalMove(this.rivalPokemon, this.trainerPokemon, rivalsMove);
+        DamageStatus(this.trainerPokemon);
+        DamageStatus(this.rivalPokemon);
+        pause();
+        Engage();
+    }
     
     public void Engage() throws InterruptedException{
         Scanner scanner = new Scanner(System.in);
         displayHealth();
         space();
-        System.out.print("[Fight] or [Use Item]");
+        System.out.print("Fight, Use Item, or Switch");
         space();
         String response = scanner.nextLine();
+        if(response.equals("Switch")){
+            space();
+            Switch();
+            space();
+        }
+
         if(response.equals("Fight")){
             Fight();
             space();

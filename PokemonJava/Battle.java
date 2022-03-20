@@ -40,7 +40,7 @@ public class Battle {
         System.out.println(YELLOW+"Welcome to Pokemon Java!"+RESET);
         pause();
         space();
-        System.out.println("Choose your Pokemon:");
+        System.out.println("Choose your Team:");
         pause();
         space();
         PokemonRoster trainerRoster = new PokemonRoster();
@@ -55,7 +55,7 @@ public class Battle {
             space();
         }
 
-        System.out.println("Type name of Pokemon you select ("+RED+"Charizard"+RESET+","+BLUE+" Blastoise"+RESET+", or "+GREEN+"Venasaur"+RESET+")");
+        System.out.println("Type name of lead Pokemon ("+RED+"Charizard"+RESET+","+BLUE+" Blastoise"+RESET+", or "+GREEN+"Venasaur"+RESET+")");
         Trainer trainer = new Trainer();
         Trainer rival = new Trainer();
 
@@ -65,23 +65,64 @@ public class Battle {
                 trainer.choosePokemon(trainerRoster.roster.get(i));
             }
         }
+
+        System.out.println("Type name of second Pokemon ("+RED+"Charizard"+RESET+","+BLUE+" Blastoise"+RESET+", or "+GREEN+"Venasaur"+RESET+")");
+        String secondPokemon = myScanner.nextLine();
+        for(int i = 0; i < trainerRoster.roster.size(); i++){
+            if(secondPokemon.equals(trainerRoster.roster.get(i).name)){
+                trainer.choose2ndPokemon(trainerRoster.roster.get(i));
+            }
+        }
+
+        System.out.println("Type name of third Pokemon ("+RED+"Charizard"+RESET+","+BLUE+" Blastoise"+RESET+", or "+GREEN+"Venasaur"+RESET+")");
+        String third = myScanner.nextLine();
+        for(int i = 0; i < trainerRoster.roster.size(); i++){
+            if(third.equals(trainerRoster.roster.get(i).name)){
+                trainer.choose2ndPokemon(trainerRoster.roster.get(i));
+            }
+        }
+
         
         //WAY TO LOOP BACK FOR INCORRECT POKEMON CHOICE
 
         space();
         pause();
-        System.out.println("You have chosen... "+trainer.pokemon.name);
+
+        if(trainer.team.size() != 3){
+            System.out.println("1 or more of the Pokemon you selected were Invalid. Please Try again.");
+            pause();
+            main(args);
+        }
+        System.out.println("You have chosen... "+trainer.pokemon.name+", "+trainer.team.get(1).name+", and "+trainer.team.get(2).name);
         pause();
 
-        int rivalIndex = getRand(rivalRoster.roster.size());
-        Pokemon rivalPokemon = rivalRoster.roster.get(rivalIndex);
-        rival.choosePokemon(rivalPokemon);
-        System.out.println("Your opponent has chosen... "+rival.pokemon.name);
+        int order = getRand(3);
+        if(order == 0){
+            rival.choosePokemon(rivalRoster.roster.get(0));
+            rival.choose2ndPokemon(rivalRoster.roster.get(1));
+            rival.choose2ndPokemon(rivalRoster.roster.get(2));
+
+        }
+        if(order == 1){
+            rival.choosePokemon(rivalRoster.roster.get(1));
+            rival.choose2ndPokemon(rivalRoster.roster.get(2));
+            rival.choose2ndPokemon(rivalRoster.roster.get(0));
+
+        }
+        if(order == 2){
+            rival.choosePokemon(rivalRoster.roster.get(2));
+            rival.choose2ndPokemon(rivalRoster.roster.get(0));
+            rival.choose2ndPokemon(rivalRoster.roster.get(1));
+
+        }
+
+
+        System.out.println("Your opponent has chosen... "+rival.pokemon.name+", "+rival.team.get(1).name+", and "+rival.team.get(2).name);
         pause();
 
         System.out.println("Battle Start!");
         BattleProcedure battleProcedure = new BattleProcedure();
-        battleProcedure.createBattle(trainer, rival, trainer.pokemon, rivalPokemon);
+        battleProcedure.createBattle(trainer, rival, trainer.pokemon, rival.pokemon);
         pause();
         battleProcedure.Engage();
 

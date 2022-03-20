@@ -123,12 +123,17 @@ public class Pokemon {
                     System.out.println(YELLOW+"It's super effective!"+RESET);
                 }
             }
+            boolean NVE = false;
             for(int i = 0; i <Move.NVEon.size();i++){
                 if( (Move.NVEon.get(i).equals(enemy.Type1)) || (Move.NVEon.get(i).equals(enemy.Type2))){
                     boosts*=0.5;
-                    System.out.println(CYAN+"It's not very effective..."+RESET);
+                    NVE = true;
                 }
             }
+            if(NVE){
+                System.out.println(CYAN+"It's not very effective..."+RESET);
+            }
+
             for(int i = 0; i <Move.NEon.size();i++){
                 if( (Move.NEon.get(i).equals(enemy.Type1)) || (Move.NEon.get(i).equals(enemy.Type2))){
                     boosts=0;
